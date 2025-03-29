@@ -26,7 +26,7 @@ it('get_public_portfolios_for_public_scope', function () {
         ->first()->id->toEqual(2);
 });
 
-it('get_portfolios_items', function () {
+it('has_portfolios_items', function () {
 
     $portfolio = Portfolio::factory()
         ->has(PortfolioItem::factory()->count(3), 'items')

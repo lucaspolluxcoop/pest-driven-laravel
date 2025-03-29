@@ -22,6 +22,7 @@ class PortfolioFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
+            'portfolio_status_id' => PortfolioStatus::PRIVATE,
         ];
     }
 

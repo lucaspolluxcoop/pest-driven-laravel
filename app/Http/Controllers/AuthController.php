@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,10 +20,22 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $token = $request->user()->createToken($request->email);
- 
+
             return response(['token' => $token->plainTextToken], 200);
         }
 
         return response(['error' => 'failed to login'], 401);
+    }
+
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required'],
+        ]);
+
+        $user = User::create($data);
+
+        return response(['user' => $user], 200);
     }
 }
