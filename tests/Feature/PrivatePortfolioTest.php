@@ -7,9 +7,9 @@ use function Pest\Laravel\get;
 
 it('show_private_portfolios', function () {
 
-    $user = User::factory()->create();
-    Portfolio::factory()->count(2)->create(['owner_id' => $user->id]);
-    Portfolio::factory()->public()->create();
+    $user = User::factory()
+        ->has(Portfolio::factory()->count(2))
+        ->create();
 
     $this->actingAs($user);
     get(route('portfolios.get'))
