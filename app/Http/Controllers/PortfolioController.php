@@ -10,7 +10,7 @@ class PortfolioController extends Controller
 {
     public function public(Request $request)
     {
-        $portfolios = Portfolio::where('portfolio_status_id', PortfolioStatus::PUBLIC)->get();
+        $portfolios = Portfolio::public()->get();
 
         return response()->json($portfolios, 200);
     }
