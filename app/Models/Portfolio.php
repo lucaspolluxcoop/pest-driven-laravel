@@ -27,6 +27,11 @@ class Portfolio extends Model
         return $this->belongsTo(PortfolioStatus::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(PortfolioItem::class);
+    }
+
     public function scopePublic(Builder $query): Builder
     {
         return $query->where('portfolio_status_id', PortfolioStatus::PUBLIC);

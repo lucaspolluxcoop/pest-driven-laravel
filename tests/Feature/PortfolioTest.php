@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Portfolio;
+use App\Models\PortfolioItem;
 
 use function Pest\Laravel\get;
 
@@ -16,11 +17,22 @@ it('show_public_portfolios', function () {
         ->assertStatus(200);
 });
 
-it('show_public_portfolios_for_public_scope', function () {
+it('get_public_portfolios_for_public_scope', function () {
 
     Portfolio::factory()->create(['portfolio_status_id' => 2]);
     Portfolio::factory()->public()->create();
 
     expect(Portfolio::public()->get())->toHaveCount(1)
         ->first()->id->toEqual(2);
+});
+
+it('get_portfolios_items', function () {
+
+    $portfolio = Portfolio::factory()
+        ->has(PortfolioItem::factory()->count(3), 'items')
+        ->public()
+        ->create();
+
+    expect($portfolio->items)->toHaveCount(3)
+        ->each->toBeInstanceOf(PortfolioItem::class);
 });
