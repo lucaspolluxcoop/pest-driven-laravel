@@ -9,4 +9,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {return $request->user();})->name('user.get');
 
     Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolios.get');
+    Route::patch('/portfolios/{portfolio}', [PortfolioController::class, 'update'])->name('portfolios.patch');
 });
