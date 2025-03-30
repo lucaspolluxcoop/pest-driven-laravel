@@ -11,7 +11,7 @@ class AuthController extends Controller
     /**
      * Handle an authentication attempt.
      */
-    public function authenticate(Request $request)
+    public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -29,6 +29,17 @@ class AuthController extends Controller
         }
 
         return response(['error' => 'Failed to login'], 401);
+    }
+
+    public function logout()
+    {
+        if (is_null(Auth::user())) {
+            return response(['error' => 'User is not logged in'], 403);
+        }
+
+        Auth::logout();
+
+        return response(['message' => 'User is logged out'], 200);
     }
 
     public function register(Request $request)

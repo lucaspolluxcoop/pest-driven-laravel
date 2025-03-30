@@ -34,6 +34,31 @@ it('a_user_cannot_sign_in_twice', function () {
         ]);
 });
 
+it('a_user_can_sign_out', function () {
+
+    $user = User::factory()->create([
+        'email' => 'testuser@test.com',
+        'password' => bcrypt('12341234')
+    ]);
+
+    loginAsUser($user);
+
+    post(route('logout'))
+        ->assertOk()
+        ->assertJsonFragment([
+            'message' => 'User is logged out'
+        ]);
+});
+
+it('a_guest_cannot_sign_out', function () {
+
+    post(route('logout'))
+        ->assertForbidden()
+        ->assertJsonFragment([
+            'error' => 'User is not logged in'
+        ]);
+});
+
 it('a_user_can_register', function () {
 
     $user = [
