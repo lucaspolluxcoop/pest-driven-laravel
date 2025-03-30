@@ -39,6 +39,11 @@ class Portfolio extends Model
         return $this->hasMany(PortfolioHistory::class);
     }
 
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     public function scopePublic(Builder $query): Builder
     {
         return $query->where('portfolio_status_id', PortfolioStatus::PUBLIC);

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\PortfolioStatus;
 use Illuminate\Database\Seeder;
 
 class InitSeeder extends Seeder
@@ -42,6 +43,17 @@ class InitSeeder extends Seeder
             ]
         ];
 
+        $portfolioStatuses = [
+            [
+                'id'    => 1,
+                'title' => 'Public',
+            ],
+            [
+                'id'    => 2,
+                'title' => 'Private',
+            ],
+        ];
+
         foreach ($roles as $role) {
             Role::updateOrInsert(['id' => $role['id']], $role);
         }
@@ -50,5 +62,8 @@ class InitSeeder extends Seeder
             $newUser = User::updateOrCreate(['email' => $user['email']], $user);
             $newUser->roles()->sync($newRoles[$index]);
         };
+        foreach ($portfolioStatuses as $status) {
+            PortfolioStatus::updateOrInsert(['id' => $status['id']], $status);
+        }
     }
 }
