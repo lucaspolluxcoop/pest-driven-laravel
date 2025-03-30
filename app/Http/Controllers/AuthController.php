@@ -11,12 +11,16 @@ class AuthController extends Controller
     /**
      * Handle an authentication attempt.
      */
-    public function authenticate(Request $request)
+    public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
+        if (Auth::user()) {
+            return response(['error' => 'User is already logged in'], 403);
+        }
 
         if (Auth::attempt($credentials)) {
             $token = $request->user()->createToken($request->email);
@@ -24,7 +28,18 @@ class AuthController extends Controller
             return response(['token' => $token->plainTextToken], 200);
         }
 
-        return response(['error' => 'failed to login'], 401);
+        return response(['error' => 'Failed to login'], 401);
+    }
+
+    public function logout()
+    {
+        if (is_null(Auth::user())) {
+            return response(['error' => 'User is not logged in'], 403);
+        }
+
+        Auth::logout();
+
+        return response(['message' => 'User is logged out'], 200);
     }
 
     public function register(Request $request)
