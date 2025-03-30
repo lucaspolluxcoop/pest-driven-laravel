@@ -18,13 +18,17 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        if (Auth::user()) {
+            return response(['error' => 'User is already logged in'], 403);
+        }
+
         if (Auth::attempt($credentials)) {
             $token = $request->user()->createToken($request->email);
 
             return response(['token' => $token->plainTextToken], 200);
         }
 
-        return response(['error' => 'failed to login'], 401);
+        return response(['error' => 'Failed to login'], 401);
     }
 
     public function register(Request $request)

@@ -18,6 +18,22 @@ it('a_user_can_sign_in', function () {
         ]);
 });
 
+it('a_user_cannot_sign_in_twice', function () {
+
+    $user = User::factory()->create([
+        'email' => 'testuser@test.com',
+        'password' => bcrypt('12341234')
+    ]);
+
+    loginAsUser($user);
+
+    post(route('login'), ['email' => $user->email, 'password' => '12341234'])
+        ->assertForbidden()
+        ->assertJsonFragment([
+            'error' => 'User is already logged in'
+        ]);
+});
+
 it('a_user_can_register', function () {
 
     $user = [
