@@ -27,3 +27,20 @@ it('has_portfolio_history', function () {
     expect($portfolio->history)->toHaveCount(2)
         ->each->toBeInstanceOf(PortfolioHistory::class);
 });
+
+it('an_admin_can_see_all_portfolios', function () {
+
+    Portfolio::factory()
+        ->has(User::factory(), 'owner')
+        ->count(2)->create();
+    Portfolio::factory()
+        ->has(User::factory(), 'owner')
+        ->count(3)->create();
+
+    $adminUser = getAdminUser();
+    loginAsUser($adminUser);
+
+    get(route('portfolios.get'))
+        ->assertJsonCount(5, 'portfolios')
+        ->assertOk();
+});

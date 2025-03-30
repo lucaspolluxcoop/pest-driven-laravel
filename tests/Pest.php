@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
@@ -51,4 +52,11 @@ function loginAsUser(User $user = null): User
     actingAs($user);
 
     return $user;
+}
+
+function getAdminUser(): User
+{
+    return User::whereHas('roles', function ($query) {
+        $query->where('roles.value', Role::ADMIN);
+    })->first();
 }

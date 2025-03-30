@@ -28,11 +28,9 @@ it('has_roles', function () {
 
 it('has_an_admin_user', function () {
 
-    $user = User::whereHas('roles', function ($query) {
-        $query->where('roles.value', Role::ADMIN);
-    })->first();
+    $adminUser = getAdminUser();
 
-    expect($user)->not->toBeNull()
-        ->and($user)->toBeInstanceOf(User::class)
-        ->and($user->roles->first()->value)->toEqual(Role::ADMIN);
+    expect($adminUser)->not->toBeNull()
+        ->and($adminUser)->toBeInstanceOf(User::class)
+        ->and($adminUser->roles->first()->value)->toEqual(Role::ADMIN);
 });
