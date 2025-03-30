@@ -9,6 +9,10 @@ class Role extends Model
 {
     use HasFactory;
 
+    public const ADMIN = 'admin';
+    public const ADVISOR = 'advisor';
+    public const SUBSCRIPTOR = 'subscriptor';
+
     /**
      * The attributes that are mass assignable.
      *
