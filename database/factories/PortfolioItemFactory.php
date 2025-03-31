@@ -19,7 +19,9 @@ class PortfolioItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->sentence,
+            'symbol' => $this->faker->word,
+            'interest' => $this->faker->numberBetween(0.00, 0.99),
+            'porcentage' => $this->faker->numberBetween(0.00, 0.99),
             'description' => $this->faker->paragraph,
         ];
     }

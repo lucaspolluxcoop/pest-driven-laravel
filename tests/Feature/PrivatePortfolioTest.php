@@ -142,7 +142,9 @@ it('a_user_can_create_portfolio_history_and_items_to_his_portfolio', function ()
     post(route('portfolio-item.create'), $portfolioItem->toArray())
         ->assertOk()
         ->assertJsonFragment([
-            'title' => $portfolioItem->title,
+            'symbol' => $portfolioItem->symbol,
+            'interest' => $portfolioItem->interest,
+            'porcentage' => $portfolioItem->porcentage,
             'description' => $portfolioItem->description,
         ]);
 
@@ -152,7 +154,9 @@ it('a_user_can_create_portfolio_history_and_items_to_his_portfolio', function ()
             'action' => $portfolioHistory->action,
             'reason' => $portfolioHistory->reason,
             'goal' => $portfolioHistory->goal,
-            'title' => $portfolioItem->title,
+            'symbol' => $portfolioItem->symbol,
+            'interest' => $portfolioItem->interest,
+            'porcentage' => $portfolioItem->porcentage,
             'description' => $portfolioItem->description,
         ]);
 });

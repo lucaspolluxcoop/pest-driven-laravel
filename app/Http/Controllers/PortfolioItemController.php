@@ -12,7 +12,9 @@ class PortfolioItemController extends Controller
     {
         $data = $request->validate([
             'portfolio_id' => 'integer|required|exists:portfolios,id',
-            'title' => 'string|required',
+            'symbol' => 'string|required',
+            'interest' => 'numeric|required',
+            'porcentage' => 'numeric|required',
             'description' => 'string|required',
         ]);
 
