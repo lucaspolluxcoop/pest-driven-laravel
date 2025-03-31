@@ -16,6 +16,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->seed(InitSeeder::class);
+        $this->artisan('db:seed');
     }
 }
