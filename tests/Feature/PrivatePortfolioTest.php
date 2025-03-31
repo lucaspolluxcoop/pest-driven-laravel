@@ -2,10 +2,12 @@
 
 use App\Models\User;
 use App\Models\Portfolio;
-use App\Models\PortfolioHistory;
+use App\Models\PortfolioItem;
 use App\Models\PortfolioStatus;
+use App\Models\PortfolioHistory;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\post;
 use function Pest\Laravel\patch;
 
 it('show_private_portfolios', function () {
@@ -23,10 +25,10 @@ it('show_private_portfolios', function () {
 it('has_portfolio_history', function () {
 
     $portfolio = Portfolio::factory()
-        ->has(PortfolioHistory::factory()->count(2), 'history')
+        ->has(PortfolioHistory::factory()->count(2), 'histories')
         ->create();
 
-    expect($portfolio->history)->toHaveCount(2)
+    expect($portfolio->histories)->toHaveCount(2)
         ->each->toBeInstanceOf(PortfolioHistory::class);
 });
 
@@ -119,5 +121,42 @@ it('a_user_can_see_his_own_portfolios', function () {
         ->assertJsonCount(1)
         ->assertJsonStructure([
             'portfolio',
+        ]);
+});
+
+it('a_user_can_create_portfolio_history_and_items_to_his_portfolio', function () {
+
+    $user = loginAsUser();
+    $portfolio = Portfolio::factory()->create(['owner_id' => $user->id]);
+
+    $portfolioHistory = PortfolioHistory::factory()->create(['portfolio_id' => $portfolio->id]);
+    post(route('portfolio-history.create'), $portfolioHistory->toArray())
+        ->assertOk()
+        ->assertJsonFragment([
+            'action' => $portfolioHistory->action,
+            'reason' => $portfolioHistory->reason,
+            'goal' => $portfolioHistory->goal,
+        ]);
+
+    $portfolioItem = PortfolioItem::factory()->create(['portfolio_id' => $portfolio->id]);
+    post(route('portfolio-item.create'), $portfolioItem->toArray())
+        ->assertOk()
+        ->assertJsonFragment([
+            'symbol' => $portfolioItem->symbol,
+            'interest' => $portfolioItem->interest,
+            'porcentage' => $portfolioItem->porcentage,
+            'description' => $portfolioItem->description,
+        ]);
+
+    get(route('portfolios.show', ['portfolio' => $portfolio->id]))
+        ->assertOk()
+        ->assertJsonFragment([
+            'action' => $portfolioHistory->action,
+            'reason' => $portfolioHistory->reason,
+            'goal' => $portfolioHistory->goal,
+            'symbol' => $portfolioItem->symbol,
+            'interest' => $portfolioItem->interest,
+            'porcentage' => $portfolioItem->porcentage,
+            'description' => $portfolioItem->description,
         ]);
 });

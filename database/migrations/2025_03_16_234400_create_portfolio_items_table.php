@@ -13,7 +13,9 @@ return new class () extends Migration {
     {
         Schema::create('portfolio_items', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('symbol');
+            $table->float('interest');
+            $table->float('porcentage');
             $table->string('description')->nullable();
             $table->foreignIdFor(Portfolio::class);
             $table->timestamps();

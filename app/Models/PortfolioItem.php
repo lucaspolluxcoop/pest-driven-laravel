@@ -15,7 +15,9 @@ class PortfolioItem extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'title',
+        'symbol',
+        'interest',
+        'porcentage',
         'description',
         'portfolio_id'
     ];
