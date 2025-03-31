@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Models\PortfolioItem;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class PortfolioItemController extends Controller
 {
@@ -17,6 +19,8 @@ class PortfolioItemController extends Controller
             'porcentage' => 'numeric|required',
             'description' => 'string|required',
         ]);
+
+        abort_if(Portfolio::find($data['portfolio_id'])->owner_id !== Auth::id(), 403);
 
         $portfolioItem = PortfolioItem::create($data);
 

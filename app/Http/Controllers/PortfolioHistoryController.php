@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Models\PortfolioHistory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class PortfolioHistoryController extends Controller
 {
@@ -16,6 +18,8 @@ class PortfolioHistoryController extends Controller
             'reason' => 'string|required',
             'goal' => 'string|required',
         ]);
+
+        abort_if(Portfolio::find($data['portfolio_id'])->owner_id !== Auth::id(), 403);
 
         $portfolioHistory = PortfolioHistory::create($data);
 
