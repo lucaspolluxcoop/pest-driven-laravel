@@ -20,7 +20,8 @@ class Portfolio extends Model
     protected $fillable = [
         'title',
         'description',
-        'portfolio_status_id'
+        'portfolio_status_id',
+        'owner_id'
     ];
 
 

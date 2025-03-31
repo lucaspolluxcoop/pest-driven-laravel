@@ -5,23 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Models\PortfolioStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class PortfolioController extends Controller
 {
-    public function public()
+    public function public(): JsonResponse
     {
         $portfolios = Portfolio::public()->get();
 
         return response()->json($portfolios, 200);
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
-        $isAdminUser = Auth::user()->isAdmin();
-
         $portfolios = Portfolio::where('portfolio_status_id', PortfolioStatus::PRIVATE)
-            ->when(!$isAdminUser, function ($query) {
+            ->when(!$this->isAdminUser, function ($query) {
                 $query->where('owner_id', Auth::user()->id);
             })
             ->get();
@@ -29,8 +28,21 @@ class PortfolioController extends Controller
         return response()->json(['portfolios' => $portfolios], 200);
     }
 
-    public function update(Portfolio $portfolio, Request $request)
+    public function show(Portfolio $portfolio): JsonResponse
     {
+        if (!$this->isAdminUser && Auth::user()->id !== $portfolio->owner_id) {
+            return response()->json(['error' => 'Cannot see a private portfolio'], 403);
+        }
+
+        return response()->json(['portfolio' => $portfolio], 200);
+    }
+
+    public function update(Portfolio $portfolio, Request $request): JsonResponse
+    {
+        if (!$this->isAdminUser && Auth::user()->id !== $portfolio->owner_id) {
+            return response()->json(['error' => 'Cannot update a private portfolio'], 403);
+        }
+
         $data = $request->validate([
             'title' => 'string',
             'description' => 'string',

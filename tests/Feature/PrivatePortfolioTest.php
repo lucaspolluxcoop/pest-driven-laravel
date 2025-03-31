@@ -74,3 +74,50 @@ it('an_admin_can_update_any_portfolio', function () {
             'portfolio_status_id' => PortfolioStatus::PUBLIC,
         ]);
 });
+
+it('a_user_cannot_update_other_user_portfolio', function () {
+
+    $portfolio = Portfolio::factory()
+        ->has(User::factory(), 'owner')
+        ->create();
+
+    loginAsUser();
+
+    $portfolio = $portfolio->toArray();
+    $portfolio['title'] = 'Nuevo Título';
+    $portfolio['portfolio_status_id'] = PortfolioStatus::PUBLIC;
+    patch(route('portfolios.patch', ['portfolio' => $portfolio['id']]), $portfolio)
+        ->assertForbidden()
+        ->assertJsonFragment([
+            'error' => 'Cannot update a private portfolio',
+        ]);
+});
+
+it('a_user_cannot_see_other_user_portfolio', function () {
+
+    $portfolio = Portfolio::factory()
+        ->has(User::factory(), 'owner')
+        ->create();
+
+    loginAsUser();
+
+    $portfolio = $portfolio->toArray();
+    get(route('portfolios.show', ['portfolio' => $portfolio['id']]))
+        ->assertForbidden()
+        ->assertJsonFragment([
+            'error' => 'Cannot see a private portfolio',
+        ]);
+});
+
+it('a_user_can_see_his_own_portfolios', function () {
+
+    $user = loginAsUser();
+    $portfolio = Portfolio::factory()->create(['owner_id' => $user->id]);
+
+    get(route('portfolios.show', ['portfolio' => $portfolio->id]))
+        ->assertOk()
+        ->assertJsonCount(1)
+        ->assertJsonStructure([
+            'portfolio',
+        ]);
+});
