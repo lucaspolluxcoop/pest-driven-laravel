@@ -35,7 +35,7 @@ class Portfolio extends Model
         return $this->hasMany(PortfolioItem::class);
     }
 
-    public function history(): HasMany
+    public function histories(): HasMany
     {
         return $this->hasMany(PortfolioHistory::class);
     }

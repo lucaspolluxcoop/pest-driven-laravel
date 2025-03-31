@@ -34,7 +34,7 @@ class PortfolioController extends Controller
             return response()->json(['error' => 'Cannot see a private portfolio'], 403);
         }
 
-        return response()->json(['portfolio' => $portfolio], 200);
+        return response()->json(['portfolio' => $portfolio->load(['items', 'histories'])], 200);
     }
 
     public function update(Portfolio $portfolio, Request $request): JsonResponse
